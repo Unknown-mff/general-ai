@@ -1,5 +1,6 @@
 package ma.general.ai.constants
 
+import com.fasterxml.jackson.annotation.JsonCreator
 import org.apache.tika.Tika
 import java.util.*
 
@@ -7,6 +8,7 @@ enum class MimeType(
     val mimeString: String,
     val extensions: List<String> = emptyList()
 ) {
+
 
     // Text Types
     TEXT_PLAIN("text/plain", listOf("txt")),
@@ -70,8 +72,20 @@ enum class MimeType(
 
 
     companion object {
+        @JsonCreator
+        @JvmStatic
+        fun fromJson(value: String?): MimeType {
+            if (value == null) return APPLICATION_PDF
+            // Try matching by enum name first (e.g., APPLICATION_PDF)
+            val byName = entries.find { it.name.equals(value, ignoreCase = true) }
+            if (byName != null) return byName
+            // Fall back to matching by MIME string (e.g., application/pdf)
+            return entries.find { it.mimeString.equals(value, ignoreCase = true) }
+                ?: APPLICATION_PDF
+        }
+
         fun fromString(mimeString: String?): MimeType? {
-            return MimeType.entries.find { it.mimeString.equals(mimeString, ignoreCase = true) }
+            return entries.find { it.mimeString.equals(mimeString, ignoreCase = true) }
         }
 
         fun fromExtension(extension: String?): MimeType? {

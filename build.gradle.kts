@@ -10,7 +10,7 @@ version = "0.0.1-SNAPSHOT"
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
+		languageVersion = JavaLanguageVersion.of(22)
 	}
 }
 
@@ -27,12 +27,18 @@ dependencies {
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 	implementation("com.google.genai:google-genai:0.2.0")
 	implementation("org.apache.tika:tika-core:3.1.0")
+	implementation("org.apache.tika:tika-parsers-standard-package:3.1.0")
 }
 
 kotlin {
 	compilerOptions {
 		freeCompilerArgs.addAll("-Xjsr305=strict")
+		jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
 	}
+}
+
+tasks.withType<JavaCompile> {
+	options.release.set(21)
 }
 
 tasks.withType<Test> {
